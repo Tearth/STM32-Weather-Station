@@ -37,7 +37,7 @@ USART_Definition UsartDefinitions[USART_COUNT] =
 	}
 };
 
-bool USART_Enable(USART_TypeDef *usartx, uint32_t baudRate)
+bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate)
 {
 	USART_Definition *definition = USART_GetDefinition(usartx);
 	if(definition == 0)
@@ -91,10 +91,10 @@ void USART_SendChar(USART_TypeDef *usartx, char c)
 	USART_SendData(usartx, c);
 }
 
-uint32_t USART_SendString(USART_TypeDef *usartx, const char *str)
+int USART_SendString(USART_TypeDef *usartx, const char *str)
 {
 	const char *ptr = str;
-	uint32_t length = 0;
+	int length = 0;
 
 	while(*ptr != 0)
 	{
