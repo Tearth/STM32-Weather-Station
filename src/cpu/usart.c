@@ -91,6 +91,12 @@ void USART_SendChar(USART_TypeDef *usartx, char c)
 	USART_SendData(usartx, c);
 }
 
+char USART_ReceiveChar(USART_TypeDef *usartx)
+{
+	while (USART_GetFlagStatus(usartx, USART_FLAG_RXNE) == RESET);
+	return USART_ReceiveData(usartx);
+}
+
 int USART_SendString(USART_TypeDef *usartx, const char *str)
 {
 	const char *ptr = str;
@@ -102,6 +108,22 @@ int USART_SendString(USART_TypeDef *usartx, const char *str)
 		length++;
 	}
 
+	return length;
+}
+
+int USART_ReceiveString(USART_TypeDef *usartx, char *buffer)
+{
+	char c;
+	int length = 0;
+
+	do
+	{
+		c = USART_ReceiveChar(usartx);
+		buffer[length++] = c;
+	}
+	while (c != 0x0A);
+
+	buffer[length] = 0;
 	return length;
 }
 

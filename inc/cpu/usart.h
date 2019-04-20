@@ -30,7 +30,9 @@ typedef struct USART_Definition
 bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate);
 bool USART_Disable(USART_TypeDef *usartx);
 void USART_SendChar(USART_TypeDef *usartx, char c);
+char USART_ReceiveChar(USART_TypeDef *usartx);
 int USART_SendString(USART_TypeDef *usartx, const char *str);
+int USART_ReceiveString(USART_TypeDef *usartx, char *buffer);
 USART_Definition *USART_GetDefinition(USART_TypeDef *usartx);
 
 #ifdef __cplusplus

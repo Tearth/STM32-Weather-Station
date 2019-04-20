@@ -91,19 +91,18 @@ void _exit (int status)
 
 int _read (int file, char *ptr, int len)
 {
-	int DataIdx;
-
-	for (DataIdx = 0; DataIdx < len; DataIdx++)
-	{
-		*ptr++ = __io_getchar();
-	}
-
-return len;
+	*ptr = USART_ReceiveChar(USART2);
+	return 1;
 }
 
 int _write(int file, char *ptr, int len)
 {
-	return USART_SendString(USART2, ptr);
+	for(int i = 0; i < len; i++)
+	{
+		USART_SendChar(USART2, ptr[i]);
+	}
+
+	return len;
 }
 
 caddr_t _sbrk(int incr)
