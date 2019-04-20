@@ -52,6 +52,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/times.h>
+#include <cpu/usart.h>
 
 
 /* Variables */
@@ -102,13 +103,7 @@ return len;
 
 int _write(int file, char *ptr, int len)
 {
-	int DataIdx;
-
-	for (DataIdx = 0; DataIdx < len; DataIdx++)
-	{
-		__io_putchar(*ptr++);
-	}
-	return len;
+	return USART_SendString(USART2, ptr);
 }
 
 caddr_t _sbrk(int incr)

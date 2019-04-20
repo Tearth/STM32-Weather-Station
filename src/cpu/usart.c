@@ -85,6 +85,26 @@ bool USART_Disable(USART_TypeDef *usartx)
 	return true;
 }
 
+void USART_SendChar(USART_TypeDef *usartx, char c)
+{
+	while (USART_GetFlagStatus(usartx, USART_FLAG_TXE) == RESET);
+	USART_SendData(usartx, c);
+}
+
+uint32_t USART_SendString(USART_TypeDef *usartx, const char *str)
+{
+	const char *ptr = str;
+	uint32_t length = 0;
+
+	while(*ptr != 0)
+	{
+		USART_SendChar(usartx, *ptr++);
+		length++;
+	}
+
+	return length;
+}
+
 USART_Definition *USART_GetDefinition(USART_TypeDef *usartx)
 {
 	for(int i = 0; i < USART_COUNT; i++)
