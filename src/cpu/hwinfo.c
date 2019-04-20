@@ -2,9 +2,10 @@
 
 void HWINFO_GetUUID(CPU_UUID *cpuUuid)
 {
-	uint32_t *uuid = UUID_ADDRESS;
+	memcpy(cpuUuid, (void *)UUID_ADDRESS, sizeof(int) * 3);
+}
 
-	cpuUuid->Coordinates = uuid[0];
-	cpuUuid->Lot = uuid[1];
-	cpuUuid->Wafer = uuid[2];
+void HWINFO_GetCPUID(CPUID *cpuId)
+{
+	memcpy(cpuId, (void *)CPUID_ADDRESS, sizeof(int));
 }
