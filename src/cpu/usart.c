@@ -39,14 +39,14 @@ USART_Definition UsartDefinitions[USART_COUNT] =
 
 bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate)
 {
-	USART_Definition *definition = USART_GetDefinition(usartx);
-	if(definition == 0)
+	USART_Definition *definition;
+	GPIO_InitTypeDef gpio;
+	USART_InitTypeDef uart;
+
+	if(definition = USART_GetDefinition(usartx), definition == 0)
 	{
 		return false;
 	}
-
-	GPIO_InitTypeDef gpio;
-	USART_InitTypeDef uart;
 
 	RCC_AHBPeriphClockCmd(definition->GpioPortClock, ENABLE);
 	definition->UsartClockCmd(definition->UsartClock, ENABLE);
@@ -73,8 +73,8 @@ bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate)
 
 bool USART_Disable(USART_TypeDef *usartx)
 {
-	USART_Definition *definition = USART_GetDefinition(usartx);
-	if(definition == 0)
+	USART_Definition *definition;
+	if(definition = USART_GetDefinition(usartx), definition == 0)
 	{
 		return false;
 	}
@@ -88,12 +88,16 @@ bool USART_Disable(USART_TypeDef *usartx)
 void USART_SendChar(USART_TypeDef *usartx, char c)
 {
 	while (USART_GetFlagStatus(usartx, USART_FLAG_TXE) == RESET);
+	USART_ClearFlag(usartx, USART_FLAG_ORE);
+
 	USART_SendData(usartx, c);
 }
 
 char USART_ReceiveChar(USART_TypeDef *usartx)
 {
 	while (USART_GetFlagStatus(usartx, USART_FLAG_RXNE) == RESET);
+	USART_ClearFlag(usartx, USART_FLAG_ORE);
+
 	return USART_ReceiveData(usartx);
 }
 
@@ -125,6 +129,11 @@ int USART_ReceiveString(USART_TypeDef *usartx, char *buffer)
 
 	buffer[length] = 0;
 	return length;
+}
+
+bool USART_IsDataReadyToReceive(USART_TypeDef* usartx)
+{
+	return USART_GetFlagStatus(usartx, USART_FLAG_RXNE) == SET;
 }
 
 USART_Definition *USART_GetDefinition(USART_TypeDef *usartx)

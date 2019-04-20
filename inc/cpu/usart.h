@@ -33,6 +33,7 @@ void USART_SendChar(USART_TypeDef *usartx, char c);
 char USART_ReceiveChar(USART_TypeDef *usartx);
 int USART_SendString(USART_TypeDef *usartx, const char *str);
 int USART_ReceiveString(USART_TypeDef *usartx, char *buffer);
+bool USART_IsDataReadyToReceive(USART_TypeDef* usartx);
 USART_Definition *USART_GetDefinition(USART_TypeDef *usartx);
 
 #ifdef __cplusplus
