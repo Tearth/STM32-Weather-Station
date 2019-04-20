@@ -14,18 +14,21 @@ typedef struct USART_Definition
 {
 	USART_TypeDef *Definition;
 
-	void (*ClockCmd)(uint32_t, FunctionalState);
-	uint32_t Clock;
+	void (*UsartClockCmd)(uint32_t, FunctionalState);
+	uint32_t UsartClock;
 
-	GPIO_TypeDef *Port;
-	uint32_t PortClock;
+	GPIO_TypeDef *GpioPort;
+	uint32_t GpioPortClock;
+
 	uint16_t RxPin;
 	uint16_t TxPin;
+
 	uint8_t RxPinSource;
 	uint8_t TxPinSource;
 } USART_Definition;
 
 bool USART_Enable(USART_TypeDef *usartx, uint32_t baudRate);
+bool USART_Disable(USART_TypeDef *usartx);
 USART_Definition *USART_GetDefinition(USART_TypeDef *usartx);
 
 #ifdef __cplusplus

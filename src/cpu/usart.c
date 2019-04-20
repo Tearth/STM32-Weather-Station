@@ -1,13 +1,13 @@
 #include <cpu/usart.h>
 
-USART_Definition USART_Definitions[USART_COUNT] =
+USART_Definition UsartDefinitions[USART_COUNT] =
 {
 	{
 		.Definition = USART1,
-		.ClockCmd = RCC_APB2PeriphClockCmd,
-		.Clock = RCC_APB2Periph_USART1,
-		.PortClock = RCC_AHBPeriph_GPIOA,
-		.Port = GPIOA,
+		.UsartClockCmd = RCC_APB2PeriphClockCmd,
+		.UsartClock = RCC_APB2Periph_USART1,
+		.GpioPortClock = RCC_AHBPeriph_GPIOA,
+		.GpioPort = GPIOA,
 		.RxPin = GPIO_Pin_10,
 		.TxPin = GPIO_Pin_9,
 		.RxPinSource = GPIO_PinSource10,
@@ -15,10 +15,10 @@ USART_Definition USART_Definitions[USART_COUNT] =
 	},
 	{
 		.Definition = USART2,
-		.ClockCmd = RCC_APB1PeriphClockCmd,
-		.Clock = RCC_APB1Periph_USART2,
-		.PortClock = RCC_AHBPeriph_GPIOA,
-		.Port = GPIOA,
+		.UsartClockCmd = RCC_APB1PeriphClockCmd,
+		.UsartClock = RCC_APB1Periph_USART2,
+		.GpioPortClock = RCC_AHBPeriph_GPIOA,
+		.GpioPort = GPIOA,
 		.RxPin = GPIO_Pin_3,
 		.TxPin = GPIO_Pin_2,
 		.RxPinSource = GPIO_PinSource3,
@@ -26,10 +26,10 @@ USART_Definition USART_Definitions[USART_COUNT] =
 	},
 	{
 		.Definition = USART3,
-		.ClockCmd = RCC_APB1PeriphClockCmd,
-		.Clock = RCC_APB1Periph_USART3,
-		.PortClock = RCC_AHBPeriph_GPIOB,
-		.Port = GPIOB,
+		.UsartClockCmd = RCC_APB1PeriphClockCmd,
+		.UsartClock = RCC_APB1Periph_USART3,
+		.GpioPortClock = RCC_AHBPeriph_GPIOB,
+		.GpioPort = GPIOB,
 		.RxPin = GPIO_Pin_11,
 		.TxPin = GPIO_Pin_10,
 		.RxPinSource = GPIO_PinSource11,
@@ -48,8 +48,8 @@ bool USART_Enable(USART_TypeDef *usartx, uint32_t baudRate)
 	GPIO_InitTypeDef gpio;
 	USART_InitTypeDef uart;
 
-	RCC_AHBPeriphClockCmd(definition->PortClock, ENABLE);
-	definition->ClockCmd(definition->Clock, ENABLE);
+	RCC_AHBPeriphClockCmd(definition->GpioPortClock, ENABLE);
+	definition->UsartClockCmd(definition->UsartClock, ENABLE);
 
 	GPIO_PinAFConfig(GPIOA, definition->RxPinSource, GPIO_AF_7);
 	GPIO_PinAFConfig(GPIOA, definition->TxPinSource, GPIO_AF_7);
@@ -60,7 +60,7 @@ bool USART_Enable(USART_TypeDef *usartx, uint32_t baudRate)
 	gpio.GPIO_OType = GPIO_OType_PP;
 	gpio.GPIO_PuPd = GPIO_PuPd_UP;
 	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(definition->Port, &gpio);
+	GPIO_Init(definition->GpioPort, &gpio);
 
 	USART_StructInit(&uart);
 	uart.USART_BaudRate = baudRate;
@@ -71,13 +71,27 @@ bool USART_Enable(USART_TypeDef *usartx, uint32_t baudRate)
 	return true;
 }
 
+bool USART_Disable(USART_TypeDef *usartx)
+{
+	USART_Definition *definition = USART_GetDefinition(usartx);
+	if(definition == 0)
+	{
+		return false;
+	}
+
+	definition->UsartClockCmd(definition->UsartClock, DISABLE);
+	USART_Cmd(usartx, DISABLE);
+
+	return true;
+}
+
 USART_Definition *USART_GetDefinition(USART_TypeDef *usartx)
 {
 	for(int i = 0; i < USART_COUNT; i++)
 	{
-		if (USART_Definitions[i].Definition == usartx)
+		if (UsartDefinitions[i].Definition == usartx)
 		{
-			return &USART_Definitions[i];
+			return &UsartDefinitions[i];
 		}
 	}
 
