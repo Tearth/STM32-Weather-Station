@@ -8,6 +8,7 @@
 
 typedef struct USART_Definition
 {
+	int Id;
 	USART_TypeDef *Definition;
 
 	void (*UsartClockCmd)(uint32_t, FunctionalState);

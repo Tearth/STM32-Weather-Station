@@ -37,6 +37,8 @@ USART_Definition UsartDefinitions[USART_COUNT] =
 	}
 };
 
+bool usart_enabled[USART_COUNT];
+
 bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate)
 {
 	USART_Definition *definition;
@@ -47,6 +49,8 @@ bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate)
 	{
 		return false;
 	}
+
+	if(usart_enabled[definition->Id]) return false;
 
 	RCC_AHBPeriphClockCmd(definition->GpioPortClock, ENABLE);
 	definition->UsartClockCmd(definition->UsartClock, ENABLE);
@@ -68,6 +72,7 @@ bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate)
 
 	USART_Cmd(usartx, ENABLE);
 
+	usart_enabled[definition->Id] = true;
 	return true;
 }
 
@@ -79,9 +84,12 @@ bool USART_Disable(USART_TypeDef *usartx)
 		return false;
 	}
 
+	if(usart_enabled[definition->Id]) return false;
+
 	definition->UsartClockCmd(definition->UsartClock, DISABLE);
 	USART_Cmd(usartx, DISABLE);
 
+	usart_enabled[definition->Id] = false;
 	return true;
 }
 

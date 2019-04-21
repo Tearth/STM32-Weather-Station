@@ -3,26 +3,32 @@
 ADC_Definition AdcDefinitions[ADC_COUNT] =
 {
 	{
+		.Id = 0,
 		.Definition = ADC1,
 		.Clock = RCC_AHBPeriph_ADC12,
 		.ClockDivider = RCC_ADC12PLLCLK_Div2,
 	},
 	{
+		.Id = 1,
 		.Definition = ADC2,
 		.Clock = RCC_AHBPeriph_ADC12,
 		.ClockDivider = RCC_ADC12PLLCLK_Div2,
 	},
 	{
+		.Id = 2,
 		.Definition = ADC3,
 		.Clock = RCC_AHBPeriph_ADC34,
 		.ClockDivider = RCC_ADC34PLLCLK_Div2,
 	},
 	{
+		.Id = 3,
 		.Definition = ADC4,
 		.Clock = RCC_AHBPeriph_ADC34,
 		.ClockDivider = RCC_ADC34PLLCLK_Div2,
 	},
 };
+
+bool adc_enabled[ADC_COUNT];
 
 bool ADC_Enable(ADC_TypeDef *adcx)
 {
@@ -33,6 +39,8 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 	{
 		return false;
 	}
+
+	if(adc_enabled[definition->Id]) return false;
 
 	RCC_AHBPeriphClockCmd(definition->Clock, ENABLE);
 	RCC_ADCCLKConfig(definition->ClockDivider);
@@ -51,12 +59,24 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 
 	ADC_Cmd(adcx, ENABLE);
 
+	adc_enabled[definition->Id] = true;
 	return true;
 }
 
 bool ADC_Disable(ADC_TypeDef *adcx)
 {
+	ADC_Definition *definition;
+
+	if(definition = ADC_GetDefinition(adcx), definition == 0)
+	{
+		return false;
+	}
+
+	if(adc_enabled[definition->Id]) return false;
+
 	ADC_Cmd(adcx, DISABLE);
+
+	adc_enabled[definition->Id] = false;
 	return true;
 }
 

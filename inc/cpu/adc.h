@@ -8,6 +8,7 @@
 
 typedef struct ADC_Definition
 {
+	int Id;
 	ADC_TypeDef *Definition;
 
 	uint32_t Clock;
