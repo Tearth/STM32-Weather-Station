@@ -7,8 +7,17 @@
 #include <stm32f30x.h>
 #include <cpu/adc.h>
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 void CPUTEMP_Enable();
 void CPUTEMP_Disable();
 float CPUTEMP_Read();
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

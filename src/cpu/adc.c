@@ -34,8 +34,8 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 		return false;
 	}
 
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ADC12, ENABLE);
-	RCC_ADCCLKConfig(RCC_ADC12PLLCLK_Div2);
+	RCC_AHBPeriphClockCmd(definition->Clock, ENABLE);
+	RCC_ADCCLKConfig(definition->ClockDivider);
 
 	ADC_StructInit(&adc);
 	adc.ADC_ContinuousConvMode = ADC_ContinuousConvMode_Disable;
@@ -47,7 +47,7 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 	ADC_VoltageRegulatorCmd(adcx, ENABLE);
 	ADC_SelectCalibrationMode(adcx, ADC_CalibrationMode_Single);
 	ADC_StartCalibration(adcx);
-	while(ADC_GetCalibrationStatus(adcx) != RESET );
+	while(ADC_GetCalibrationStatus(adcx) != RESET);
 
 	ADC_Cmd(adcx, ENABLE);
 
@@ -62,7 +62,7 @@ bool ADC_Disable(ADC_TypeDef *adcx)
 
 int ADC_Read(ADC_TypeDef *adcx, uint8_t channel)
 {
-    ADC_RegularChannelConfig(adcx, channel, 1, ADC_SampleTime_7Cycles5);
+    ADC_RegularChannelConfig(adcx, channel, 1, ADC_SampleTime_61Cycles5);
     ADC_StartConversion(adcx);
     while (!ADC_GetFlagStatus(adcx, ADC_FLAG_EOC));
 

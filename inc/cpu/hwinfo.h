@@ -8,6 +8,10 @@
 #include <stdint.h>
 #include <cpu/hwinfo.h>
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 typedef union CPU_UUID
 {
 	int Value[3];
@@ -32,7 +36,15 @@ typedef union CPUID
 	} ID_Details;
 } CPUID;
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 void HWINFO_GetUUID(CPU_UUID *cpuUuid);
 void HWINFO_GetCPUID(CPUID *cpuId);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

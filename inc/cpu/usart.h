@@ -6,10 +6,6 @@
 #include <stdbool.h>
 #include <stm32f30x.h>
 
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 typedef struct USART_Definition
 {
 	USART_TypeDef *Definition;
@@ -26,6 +22,10 @@ typedef struct USART_Definition
 	uint8_t RxPinSource;
 	uint8_t TxPinSource;
 } USART_Definition;
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 bool USART_Enable(USART_TypeDef *usartx, unsigned int baudRate);
 bool USART_Disable(USART_TypeDef *usartx);

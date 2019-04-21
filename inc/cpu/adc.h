@@ -6,10 +6,6 @@
 
 #define ADC_COUNT 4
 
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 typedef struct ADC_Definition
 {
 	ADC_TypeDef *Definition;
@@ -17,6 +13,10 @@ typedef struct ADC_Definition
 	uint32_t Clock;
 	uint32_t ClockDivider;
 } ADC_Definition;
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 bool ADC_Enable(ADC_TypeDef *adcx);
 bool ADC_Disable(ADC_TypeDef *adcx);
