@@ -54,6 +54,15 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 	return true;
 }
 
+int ADC_Read(ADC_TypeDef *adcx, uint8_t channel)
+{
+    ADC_RegularChannelConfig(adcx, channel, 1, ADC_SampleTime_7Cycles5);
+    ADC_StartConversion(adcx);
+    while (!ADC_GetFlagStatus(adcx, ADC_FLAG_EOC));
+
+    return ADC_GetConversionValue(adcx);
+}
+
 ADC_Definition *ADC_GetDefinition(ADC_TypeDef *adcx)
 {
 	for(int i = 0; i < ADC_COUNT; i++)
