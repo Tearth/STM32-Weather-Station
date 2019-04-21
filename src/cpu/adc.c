@@ -54,6 +54,12 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 	return true;
 }
 
+bool ADC_Disable(ADC_TypeDef *adcx)
+{
+	ADC_Cmd(adcx, DISABLE);
+	return true;
+}
+
 int ADC_Read(ADC_TypeDef *adcx, uint8_t channel)
 {
     ADC_RegularChannelConfig(adcx, channel, 1, ADC_SampleTime_7Cycles5);

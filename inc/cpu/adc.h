@@ -19,6 +19,7 @@ typedef struct ADC_Definition
 } ADC_Definition;
 
 bool ADC_Enable(ADC_TypeDef *adcx);
+bool ADC_Disable(ADC_TypeDef *adcx);
 int ADC_Read(ADC_TypeDef *adcx, uint8_t channel);
 ADC_Definition *ADC_GetDefinition(ADC_TypeDef *adcx);
 
