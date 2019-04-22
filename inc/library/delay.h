@@ -7,7 +7,7 @@
  extern "C" {
 #endif
 
-void Delay(int milliseconds);
+void Delay(unsigned int milliseconds);
 
 #ifdef __cplusplus
 }

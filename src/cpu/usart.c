@@ -3,6 +3,7 @@
 USART_Definition UsartDefinitions[USART_COUNT] =
 {
 	{
+		.Id = 0,
 		.Definition = USART1,
 		.UsartClockCmd = RCC_APB2PeriphClockCmd,
 		.UsartClock = RCC_APB2Periph_USART1,
@@ -14,6 +15,7 @@ USART_Definition UsartDefinitions[USART_COUNT] =
 		.TxPinSource = GPIO_PinSource9
 	},
 	{
+		.Id = 1,
 		.Definition = USART2,
 		.UsartClockCmd = RCC_APB1PeriphClockCmd,
 		.UsartClock = RCC_APB1Periph_USART2,
@@ -25,6 +27,7 @@ USART_Definition UsartDefinitions[USART_COUNT] =
 		.TxPinSource = GPIO_PinSource2
 	},
 	{
+		.Id = 2,
 		.Definition = USART3,
 		.UsartClockCmd = RCC_APB1PeriphClockCmd,
 		.UsartClock = RCC_APB1Periph_USART3,
