@@ -41,6 +41,7 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 	}
 
 	if(adc_enabled[definition->Id]) return false;
+	adc_enabled[definition->Id] = true;
 
 	RCC_AHBPeriphClockCmd(definition->Clock, ENABLE);
 	RCC_ADCCLKConfig(definition->ClockDivider);
@@ -59,7 +60,6 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 
 	ADC_Cmd(adcx, ENABLE);
 
-	adc_enabled[definition->Id] = true;
 	return true;
 }
 
@@ -73,10 +73,9 @@ bool ADC_Disable(ADC_TypeDef *adcx)
 	}
 
 	if(adc_enabled[definition->Id]) return false;
+	adc_enabled[definition->Id] = false;
 
 	ADC_Cmd(adcx, DISABLE);
-
-	adc_enabled[definition->Id] = false;
 	return true;
 }
 

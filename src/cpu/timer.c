@@ -95,6 +95,7 @@ bool TIMER_Enable(TIM_TypeDef *timx, unsigned int milliseconds)
 	}
 
 	if(timers_enabled[definition->Id]) return false;
+	timers_enabled[definition->Id] = true;
 
 	definition->TimerClockCmd(definition->TimerClock, ENABLE);
 
@@ -104,14 +105,32 @@ bool TIMER_Enable(TIM_TypeDef *timx, unsigned int milliseconds)
 	tim.TIM_Period = (milliseconds * 2) - 1;
 	TIM_TimeBaseInit(timx, &tim);
 
-	TIM_ITConfig(timx, TIM_IT_Update, ENABLE);
-	TIM_Cmd(timx, ENABLE);
-
 	nvic.NVIC_IRQChannel = definition->IRQChannel;
 	nvic.NVIC_IRQChannelPreemptionPriority = 0;
 	nvic.NVIC_IRQChannelSubPriority = 0;
 	nvic.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&nvic);
+
+	TIM_ITConfig(timx, TIM_IT_Update, ENABLE);
+	TIM_Cmd(timx, ENABLE);
+
+	return true;
+}
+
+bool TIMER_Disable(TIM_TypeDef *timx)
+{
+	TIMER_Definition *definition;
+
+	if(definition = TIMER_GetDefinition(timx), definition == 0)
+	{
+		return false;
+	}
+
+	if(!timers_enabled[definition->Id]) return false;
+	timers_enabled[definition->Id] = false;
+
+	TIM_ITConfig(timx, TIM_IT_Update, DISABLE);
+	TIM_Cmd(timx, DISABLE);
 
 	return true;
 }

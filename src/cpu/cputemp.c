@@ -5,23 +5,23 @@ bool cputemp_enabled = false;
 bool CPUTEMP_Enable()
 {
 	if(cputemp_enabled) return false;
+	cputemp_enabled = true;
 
 	ADC_Enable(ADC1);
 	ADC_Cmd(ADC1, ENABLE);
 	ADC_TempSensorCmd(ADC1, ENABLE);
 
-	cputemp_enabled = true;
 	return true;
 }
 
 bool CPUTEMP_Disable()
 {
 	if(!cputemp_enabled) return false;
+	cputemp_enabled = false;
 
 	ADC_Cmd(ADC1, DISABLE);
 	ADC_TempSensorCmd(ADC1, DISABLE);
 
-	cputemp_enabled = false;
 	return true;
 }
 

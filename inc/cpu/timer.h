@@ -21,6 +21,7 @@ typedef struct TIMER_Definition
 #endif
 
 bool TIMER_Enable(TIM_TypeDef *timx, unsigned int milliseconds);
+bool TIMER_Disable(TIM_TypeDef *timx);
 TIMER_Definition *TIMER_GetDefinition(TIM_TypeDef *usartx);
 
 #ifdef __cplusplus
