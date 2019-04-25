@@ -15,4 +15,6 @@ int ESP8266_SendCommand(const char *str);
 bool ESP8266_SendCommandAndWaitForOK(const char *str);
 int ESP8266_ReceiveData(char *buf);
 
+int ESP8266_GetFirmware(char *buf);
+
 #endif

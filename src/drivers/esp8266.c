@@ -44,3 +44,9 @@ int ESP8266_ReceiveData(char *buf)
 	USART_ReceiveString(ESP8266_USART_INTERFACE, buf);
 	return USART_ReceiveString(ESP8266_USART_INTERFACE, buf);
 }
+
+int ESP8266_GetFirmware(char *buf)
+{
+	ESP8266_SendCommand("AT+GMR");
+	return ESP8266_ReceiveData(buf);
+}
