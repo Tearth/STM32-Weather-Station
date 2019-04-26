@@ -117,3 +117,23 @@ bool ESP8266_GetIPAndMAC(char *ip, char *mac)
 
 	return ack;
 }
+
+int ESP8266_SendPing(char *ip)
+{
+	char buf[64];
+	int ping;
+
+	sprintf(buf, "AT+PING=\"%s\"", ip);
+
+	ESP8266_SendCommand(buf);
+	ESP8266_ReceiveData(buf);
+	bool ack = ESP8266_WaitForAck();
+
+	if(!ack)
+	{
+		return -1;
+	}
+
+	sscanf(buf, "%d\r\n", &ping);
+	return ping;
+}

@@ -38,5 +38,6 @@ bool ESP8266_SetMode(ESP8266_Mode mode);
 bool ESP8266_Connect(const char *ssid, const char *password);
 bool ESP8266_Disconnect();
 bool ESP8266_GetIPAndMAC(char *ip, char *mac);
+int ESP8266_SendPing(char *ip);
 
 #endif
