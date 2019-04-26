@@ -35,5 +35,7 @@ bool ESP8266_Reset();
 bool ESP8266_SetEcho(bool enabled);
 bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo);
 bool ESP8266_SetMode(ESP8266_Mode mode);
+bool ESP8266_Connect(const char *ssid, const char *password);
+bool ESP8266_Disconnect();
 
 #endif

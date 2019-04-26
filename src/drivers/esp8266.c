@@ -7,6 +7,8 @@ bool ESP8266_Enable()
 		return false;
 	}
 
+	ESP8266_Reset();
+
 	Delay(500);
 	return ESP8266_SetEcho(false) && ESP8266_IsConnected();
 }
@@ -33,7 +35,12 @@ int ESP8266_ReceiveData(char *buf)
 bool ESP8266_WaitForOK()
 {
 	char buffer[128];
-	return ESP8266_ReceiveData(buffer) == 4 && memcmp("OK", buffer, 2) == 0;
+	if(!ESP8266_ReceiveData(buffer) == 4 && memcmp("OK", buffer, 2) == 0)
+	{
+		printf(buffer);
+		return false;
+	}
+	return true;
 }
 
 bool ESP8266_IsConnected()
@@ -71,5 +78,22 @@ bool ESP8266_SetMode(ESP8266_Mode mode)
 	sprintf(buf, "AT+CWMODE=%d", mode);
 
 	ESP8266_SendCommand(buf);
+	return ESP8266_WaitForOK();
+}
+
+bool ESP8266_Connect(const char *ssid, const char *password)
+{
+	char buf[64];
+	sprintf(buf, "AT+CWJAP=\"%s\",\"%s\"", ssid, password);
+
+	ESP8266_SendCommand(buf);
+	while(!ESP8266_WaitForOK());
+
+	return true;
+}
+
+bool ESP8266_Disconnect()
+{
+	ESP8266_SendCommand("AT+CWQAP");
 	return ESP8266_WaitForOK();
 }
