@@ -18,6 +18,13 @@ typedef struct ESP8266_FirmwareInfo
 	char CompileTime[64];
 } ESP8266_FirmwareInfo;
 
+typedef enum ESP8266_Mode
+{
+	ESP8266_Mode_Client = 1,
+	ESP8266_Mode_AccessPoint = 2,
+	ESP8266_Mode_ClientAndAccessPoint = 3
+} ESP8266_Mode;
+
 bool ESP8266_Enable();
 int ESP8266_SendCommand(const char *str);
 int ESP8266_ReceiveData(char *buf);
@@ -27,5 +34,6 @@ bool ESP8266_IsConnected();
 bool ESP8266_Reset();
 bool ESP8266_SetEcho(bool enabled);
 bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo);
+bool ESP8266_SetMode(ESP8266_Mode mode);
 
 #endif

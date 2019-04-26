@@ -64,3 +64,12 @@ bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo)
 
 	return ESP8266_WaitForOK();
 }
+
+bool ESP8266_SetMode(ESP8266_Mode mode)
+{
+	char buf[16];
+	sprintf(buf, "AT+CWMODE=%d", mode);
+
+	ESP8266_SendCommand(buf);
+	return ESP8266_WaitForOK();
+}
