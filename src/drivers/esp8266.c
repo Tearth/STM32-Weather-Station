@@ -7,46 +7,53 @@ bool ESP8266_Enable()
 		return false;
 	}
 
-	if(!ESP8266_SendCommandAndWaitForOK("ATE0"))
-	{
-		return false;
-	}
-
-	if(!ESP8266_SendCommandAndWaitForOK("AT+RST"))
-	{
-		return false;
-	}
-
-	return true;
+	return ESP8266_Reset() && ESP8266_SetEcho(false);
 }
 
 int ESP8266_SendCommand(const char *str)
 {
-	char buffer[128];
+	char buffer[32];
 	sprintf(buffer, "%s\r\n", str);
 
 	return USART_SendString(ESP8266_USART_INTERFACE, buffer);
 }
 
-bool ESP8266_SendCommandAndWaitForOK(const char *str)
-{
-	char buffer[128];
-	int length;
-
-	ESP8266_SendCommand(str);
-	length = ESP8266_ReceiveData(buffer);
-
-	return memcmp("OK", buffer, length - 2) == 0;
-}
-
 int ESP8266_ReceiveData(char *buf)
 {
-	USART_ReceiveString(ESP8266_USART_INTERFACE, buf);
-	return USART_ReceiveString(ESP8266_USART_INTERFACE, buf);
+	int length;
+	do
+	{
+		length = USART_ReceiveString(ESP8266_USART_INTERFACE, buf);
+	}
+	while(memcmp("\r\n", buf, 2) == 0);
+	return length;
 }
 
-int ESP8266_GetFirmware(char *buf)
+bool ESP8266_WaitForOK()
+{
+	char buffer[128];
+	return ESP8266_ReceiveData(buffer) == 4 && memcmp("OK", buffer, 2) == 0;
+}
+
+bool ESP8266_Reset()
+{
+	ESP8266_SendCommand("AT+RST");
+	return ESP8266_WaitForOK();
+}
+
+bool ESP8266_SetEcho(bool enabled)
+{
+	ESP8266_SendCommand(enabled ? "ATE1" : "ATE0");
+	return ESP8266_WaitForOK();
+}
+
+bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo)
 {
 	ESP8266_SendCommand("AT+GMR");
-	return ESP8266_ReceiveData(buf);
+
+	ESP8266_ReceiveData(firmwareInfo->ATVersionInfo);
+	ESP8266_ReceiveData(firmwareInfo->SDKVersionInfo);
+	ESP8266_ReceiveData(firmwareInfo->CompileTime);
+
+	return ESP8266_WaitForOK();
 }
