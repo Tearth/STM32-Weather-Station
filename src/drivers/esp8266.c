@@ -7,7 +7,8 @@ bool ESP8266_Enable()
 		return false;
 	}
 
-	return ESP8266_Reset() && ESP8266_SetEcho(false);
+	Delay(500);
+	return ESP8266_SetEcho(false) && ESP8266_IsConnected();
 }
 
 int ESP8266_SendCommand(const char *str)
@@ -33,6 +34,12 @@ bool ESP8266_WaitForOK()
 {
 	char buffer[128];
 	return ESP8266_ReceiveData(buffer) == 4 && memcmp("OK", buffer, 2) == 0;
+}
+
+bool ESP8266_IsConnected()
+{
+	ESP8266_SendCommand("AT");
+	return ESP8266_WaitForOK();
 }
 
 bool ESP8266_Reset()

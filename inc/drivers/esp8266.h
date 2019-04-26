@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stm32f30x.h>
 #include <cpu/usart.h>
+#include <library/delay.h>
 
 typedef struct ESP8266_FirmwareInfo
 {
@@ -21,6 +22,8 @@ bool ESP8266_Enable();
 int ESP8266_SendCommand(const char *str);
 int ESP8266_ReceiveData(char *buf);
 bool ESP8266_WaitForOK();
+
+bool ESP8266_IsConnected();
 bool ESP8266_Reset();
 bool ESP8266_SetEcho(bool enabled);
 bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo);
