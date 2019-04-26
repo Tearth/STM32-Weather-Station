@@ -28,7 +28,7 @@ typedef enum ESP8266_Mode
 bool ESP8266_Enable();
 int ESP8266_SendCommand(const char *str);
 int ESP8266_ReceiveData(char *buf);
-bool ESP8266_WaitForOK();
+bool ESP8266_WaitForAck();
 
 bool ESP8266_IsConnected();
 bool ESP8266_Reset();
@@ -37,5 +37,6 @@ bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo);
 bool ESP8266_SetMode(ESP8266_Mode mode);
 bool ESP8266_Connect(const char *ssid, const char *password);
 bool ESP8266_Disconnect();
+bool ESP8266_GetIPAndMAC(char *ip, char *mac);
 
 #endif

@@ -28,37 +28,44 @@ int ESP8266_ReceiveData(char *buf)
 	{
 		length = USART_ReceiveString(ESP8266_USART_INTERFACE, buf);
 	}
-	while(memcmp("\r\n", buf, 2) == 0);
+	while(memcmp("\r\n", buf, 2) == 0 || memcmp("busy", buf, 4) == 0);
 	return length;
 }
 
-bool ESP8266_WaitForOK()
+bool ESP8266_WaitForAck()
 {
 	char buffer[128];
-	if(!ESP8266_ReceiveData(buffer) == 4 && memcmp("OK", buffer, 2) == 0)
+	while(1)
 	{
-		printf(buffer);
-		return false;
+		ESP8266_ReceiveData(buffer);
+
+		if(memcmp("OK\r\n", buffer, 4) == 0)
+		{
+			return true;
+		}
+		else if(memcmp("ERROR\r\n", buffer, 7) == 0 || memcmp("FAIL\r\n", buffer, 6) == 0)
+		{
+			return false;
+		}
 	}
-	return true;
 }
 
 bool ESP8266_IsConnected()
 {
 	ESP8266_SendCommand("AT");
-	return ESP8266_WaitForOK();
+	return ESP8266_WaitForAck();
 }
 
 bool ESP8266_Reset()
 {
 	ESP8266_SendCommand("AT+RST");
-	return ESP8266_WaitForOK();
+	return ESP8266_WaitForAck();
 }
 
 bool ESP8266_SetEcho(bool enabled)
 {
 	ESP8266_SendCommand(enabled ? "ATE1" : "ATE0");
-	return ESP8266_WaitForOK();
+	return ESP8266_WaitForAck();
 }
 
 bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo)
@@ -69,7 +76,7 @@ bool ESP8266_GetFirmware(ESP8266_FirmwareInfo* firmwareInfo)
 	ESP8266_ReceiveData(firmwareInfo->SDKVersionInfo);
 	ESP8266_ReceiveData(firmwareInfo->CompileTime);
 
-	return ESP8266_WaitForOK();
+	return ESP8266_WaitForAck();
 }
 
 bool ESP8266_SetMode(ESP8266_Mode mode)
@@ -78,7 +85,7 @@ bool ESP8266_SetMode(ESP8266_Mode mode)
 	sprintf(buf, "AT+CWMODE=%d", mode);
 
 	ESP8266_SendCommand(buf);
-	return ESP8266_WaitForOK();
+	return ESP8266_WaitForAck();
 }
 
 bool ESP8266_Connect(const char *ssid, const char *password)
@@ -87,13 +94,26 @@ bool ESP8266_Connect(const char *ssid, const char *password)
 	sprintf(buf, "AT+CWJAP=\"%s\",\"%s\"", ssid, password);
 
 	ESP8266_SendCommand(buf);
-	while(!ESP8266_WaitForOK());
-
-	return true;
+	return ESP8266_WaitForAck();
 }
 
 bool ESP8266_Disconnect()
 {
 	ESP8266_SendCommand("AT+CWQAP");
-	return ESP8266_WaitForOK();
+	return ESP8266_WaitForAck();
+}
+
+bool ESP8266_GetIPAndMAC(char *ip, char *mac)
+{
+	char line_ip[64], line_mac[64];
+
+	ESP8266_SendCommand("AT+CIFSR");
+	ESP8266_ReceiveData(line_ip);
+	ESP8266_ReceiveData(line_mac);
+	bool ack = ESP8266_WaitForAck();
+
+	sscanf(line_ip, "+CIFSR:STAIP,\"%[^\"]\"\r\n", ip);
+	sscanf(line_mac, "+CIFSR:STAMAC,\"%[^\"]\"\r\n", mac);
+
+	return ack;
 }
