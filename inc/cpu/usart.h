@@ -2,6 +2,7 @@
 #define USART_H
 
 #define USART_COUNT 3
+#define USART_BUFFER_SIZE 1024
 
 #include <stdbool.h>
 #include <stm32f30x.h>
@@ -17,11 +18,17 @@ typedef struct USART_Definition
 	uint32_t GpioPortClock;
 	GPIO_TypeDef *GpioPort;
 
+	uint8_t UsartIrq;
+
 	uint32_t RxPin;
 	uint32_t TxPin;
 
 	uint8_t RxPinSource;
 	uint8_t TxPinSource;
+
+	uint8_t Buffer[USART_BUFFER_SIZE];
+	uint32_t BufferPos;
+	uint32_t BufferPeak;
 } USART_Definition;
 
 #ifdef __cplusplus
