@@ -98,7 +98,7 @@ bool USART_Disable(USART_TypeDef *usartx)
 		return false;
 	}
 
-	if(usart_enabled[definition->Id]) return false;
+	if(!usart_enabled[definition->Id]) return false;
 	usart_enabled[definition->Id] = false;
 
 	definition->UsartClockCmd(definition->UsartClock, DISABLE);

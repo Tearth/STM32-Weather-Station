@@ -7,10 +7,26 @@ bool ESP8266_Enable()
 		return false;
 	}
 
-	ESP8266_Reset();
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+	GPIO_InitTypeDef gpio;
+	GPIO_StructInit(&gpio);
+	gpio.GPIO_Pin = ESP8266_CHPD_PIN;
+	gpio.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_Init(ESP8266_CHPD_PORT, &gpio);
 
+	GPIO_SetBits(ESP8266_CHPD_PORT, ESP8266_CHPD_PIN);
 	Delay(500);
+
+	ESP8266_Reset();
+	Delay(500);
+
 	return ESP8266_SetEcho(false) && ESP8266_IsConnected();
+}
+
+bool ESP8266_Disable()
+{
+	GPIO_ResetBits(ESP8266_CHPD_PORT, ESP8266_CHPD_PIN);
+	return USART_Disable(ESP8266_USART_INTERFACE);
 }
 
 int ESP8266_SendCommand(const char *str)
@@ -207,7 +223,6 @@ bool ESP8266_WaitForTCPClose()
 	while(1)
 	{
 		ESP8266_ReceiveLine(buffer);
-		printf(buffer);
 		if(strstr(buffer, "CLOSED\r\n") != NULL)
 		{
 			break;

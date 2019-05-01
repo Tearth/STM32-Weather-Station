@@ -4,6 +4,9 @@
 #define ESP8266_USART_INTERFACE USART1
 #define ESP8266_USART_SPEED 9600
 
+#define ESP8266_CHPD_PIN GPIO_Pin_9
+#define ESP8266_CHPD_PORT GPIOC
+
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
@@ -26,6 +29,7 @@ typedef enum ESP8266_Mode
 } ESP8266_Mode;
 
 bool ESP8266_Enable();
+bool ESP8266_Disable();
 int ESP8266_SendCommand(const char *str);
 int ESP8266_ReceiveData(char *buf);
 bool ESP8266_WaitForAck();
