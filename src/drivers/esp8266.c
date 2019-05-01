@@ -144,8 +144,36 @@ bool ESP8266_SendGET(char *host, int port, char *path)
 			"GET %s HTTP/1.1\r\n"
 			"User-Agent: STM32 Weather Station\r\n"
 			"Host: %s\r\n"
-			"Connection: Close\r\n\r\n",
+			"Connection: Close\r\n"
+			"\r\n",
 			path, host);
+
+	char command_buffer[128];
+	sprintf(command_buffer, "AT+CIPSEND=%d", strlen(request_buffer));
+
+	ESP8266_SendCommand(command_buffer);
+	ESP8266_WaitForAck();
+
+	USART_SendString(ESP8266_USART_INTERFACE, request_buffer);
+	return ESP8266_WaitForTCPClose();
+}
+
+bool ESP8266_SendPOST(char *host, int port, char *path, char *values)
+{
+	if(!ESP8266_OpenTCPConnection(host, port)) return false;
+
+	char request_buffer[1024];
+	sprintf(request_buffer,
+			"POST %s HTTP/1.1\r\n"
+			"User-Agent: STM32 Weather Station\r\n"
+			"Host: %s\r\n"
+			"Content-Type: application/x-www-form-urlencoded\r\n"
+			"Content-Length: %d\r\n"
+			"Connection: Close\r\n"
+			"\r\n"
+			"%s\r\n"
+			"\r\n",
+			path, host, strlen(values), values);
 
 	char command_buffer[128];
 	sprintf(command_buffer, "AT+CIPSEND=%d", strlen(request_buffer));
