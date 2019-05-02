@@ -35,6 +35,7 @@ bool I2C_Enable(I2C_TypeDef *i2cx)
 		return false;
 	}
 
+	if(i2c_enabled[definition->Id]) return false;
 	definition->I2CClockCmd(definition->I2CClock, ENABLE);
 
 	GPIO_StructInit(&gpio);
@@ -48,13 +49,26 @@ bool I2C_Enable(I2C_TypeDef *i2cx)
 	I2C_Init(i2cx, &i2c);
 
 	I2C_Cmd(i2cx, ENABLE);
+	i2c_enabled[definition->Id] = true;
 
 	return true;
 }
 
 bool I2C_Disable(I2C_TypeDef *i2cx)
 {
+	I2C_Definition *definition;
+	if(definition = I2C_GetDefinition(i2cx), definition == 0)
+	{
+		return false;
+	}
 
+	if(!i2c_enabled[definition->Id]) return false;
+	i2c_enabled[definition->Id] = false;
+
+	definition->I2CClockCmd(definition->I2CClock, DISABLE);
+	I2C_Cmd(i2cx, DISABLE);
+
+	return true;
 }
 
 I2C_Definition *I2C_GetDefinition(I2C_TypeDef *i2cx)
