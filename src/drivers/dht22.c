@@ -1,17 +1,25 @@
 #include <drivers/dht22.h>
 
+bool dht22_enabled;
+
 bool DHT22_Enable()
 {
+	if(dht22_enabled) return false;
+
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 	DHT22_PrepareDataPinToWrite();
 
 	GPIO_SetBits(DHT22_DATA_PORT, DHT22_DATA_PIN);
 
+	dht22_enabled = true;
 	return true;
 }
 
 bool DHT22_Disable()
 {
+	if(!dht22_enabled) return false;
+
+	dht22_enabled = false;
 	return true;
 }
 

@@ -1,7 +1,11 @@
 #include <drivers/esp8266.h>
 
+bool esp8266_enabled;
+
 bool ESP8266_Enable()
 {
+	if(esp8266_enabled) return false;
+
 	if(!USART_Enable(ESP8266_USART_INTERFACE, ESP8266_USART_SPEED))
 	{
 		return false;
@@ -20,12 +24,17 @@ bool ESP8266_Enable()
 	ESP8266_Reset();
 	Delay(500);
 
+	esp8266_enabled = true;
 	return ESP8266_SetEcho(false) && ESP8266_IsConnected();
 }
 
 bool ESP8266_Disable()
 {
+	if(!esp8266_enabled) return false;
+
 	GPIO_ResetBits(ESP8266_CHPD_PORT, ESP8266_CHPD_PIN);
+
+	esp8266_enabled = false;
 	return USART_Disable(ESP8266_USART_INTERFACE);
 }
 
