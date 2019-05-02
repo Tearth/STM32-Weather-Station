@@ -8,8 +8,11 @@ I2C_Definition I2CDefinitions[I2C_COUNT] =
 		.I2CClockCmd = RCC_APB1PeriphClockCmd,
 		.I2CClock = RCC_APB1Periph_I2C1,
 		.GpioPort = GPIOB,
+		.GpioPortClock = RCC_AHBPeriph_GPIOB,
 		.SDAPin = GPIO_Pin_9,
-		.SCLPin = GPIO_Pin_8
+		.SCLPin = GPIO_Pin_8,
+		.SDAPinSource = GPIO_PinSource9,
+		.SCLPinSource = GPIO_PinSource8
 	},
 	{
 		.Id = 1,
@@ -17,8 +20,11 @@ I2C_Definition I2CDefinitions[I2C_COUNT] =
 		.I2CClockCmd = RCC_APB1PeriphClockCmd,
 		.I2CClock = RCC_APB1Periph_I2C2,
 		.GpioPort = GPIOF,
+		.GpioPortClock = RCC_AHBPeriph_GPIOF,
 		.SDAPin = GPIO_Pin_0,
-		.SCLPin = GPIO_Pin_1
+		.SCLPin = GPIO_Pin_1,
+		.SDAPinSource = GPIO_PinSource0,
+		.SCLPinSource = GPIO_PinSource1
 	}
 };
 
@@ -36,12 +42,16 @@ bool I2C_Enable(I2C_TypeDef *i2cx)
 	}
 
 	if(i2c_enabled[definition->Id]) return false;
+
 	definition->I2CClockCmd(definition->I2CClock, ENABLE);
+	RCC_AHBPeriphClockCmd(definition->GpioPortClock, ENABLE);
+
+	GPIO_PinAFConfig(definition->GpioPort, definition->SDAPinSource, GPIO_AF_4);
+	GPIO_PinAFConfig(definition->GpioPort, definition->SCLPinSource, GPIO_AF_4);
 
 	GPIO_StructInit(&gpio);
 	gpio.GPIO_Pin = definition->SDAPin | definition->SCLPin;
 	gpio.GPIO_Mode = GPIO_Mode_AF;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(definition->GpioPort, &gpio);
 
 	I2C_StructInit(&i2c);
@@ -49,8 +59,8 @@ bool I2C_Enable(I2C_TypeDef *i2cx)
 	I2C_Init(i2cx, &i2c);
 
 	I2C_Cmd(i2cx, ENABLE);
-	i2c_enabled[definition->Id] = true;
 
+	i2c_enabled[definition->Id] = true;
 	return true;
 }
 

@@ -14,10 +14,14 @@ typedef struct I2C_Definition
 	void (*I2CClockCmd)(uint32_t, FunctionalState);
 	uint32_t I2CClock;
 
+	uint32_t GpioPortClock;
 	GPIO_TypeDef *GpioPort;
 
 	uint32_t SDAPin;
 	uint32_t SCLPin;
+
+	uint8_t SDAPinSource;
+	uint8_t SCLPinSource;
 } I2C_Definition;
 
 #ifdef __cplusplus
@@ -26,6 +30,7 @@ typedef struct I2C_Definition
 
 bool I2C_Enable(I2C_TypeDef *i2cx);
 bool I2C_Disable(I2C_TypeDef *i2cx);
+
 I2C_Definition *I2C_GetDefinition(I2C_TypeDef *i2cx);
 
 #ifdef __cplusplus
