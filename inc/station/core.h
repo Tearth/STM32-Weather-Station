@@ -11,6 +11,8 @@
 #include <cpu/timer.h>
 #include <library/delay.h>
 #include <drivers/esp8266.h>
+#include <drivers/dht22.h>
+#include <drivers/tsl2581.h>
 
 bool Core_DoMeasurementsAndSend();
 

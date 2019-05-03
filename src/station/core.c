@@ -2,11 +2,25 @@
 
 bool Core_DoMeasurementsAndSend()
 {
-	printf("Enabling WiFi module...\r\n");
-	if(!ESP8266_Enable())
+	printf("Enabling modules...\r\n");
+	if(!ESP8266_Enable() || !DHT22_Enable() || !TSL2581_Enable())
 	{
 		return false;
 	}
+	Delay(300);
+
+	printf("Reading humidity...\r\n");
+
+	float humidity, temperature;
+	if(!DHT22_GetHumidityAndTemperature(&humidity, &temperature))
+	{
+		return false;
+	}
+
+	printf("Humidity = %.2f %%, Temperature = %.2f C\r\n", humidity, temperature);
+
+	printf("Reading insolation...\r\n");
+	printf("Insolation = %d Lux\r\n", TSL2581_ReadInsolation());
 
 	printf("Setting mode...\r\n");
 	if(!ESP8266_SetMode(ESP8266_Mode_Client))
@@ -26,8 +40,8 @@ bool Core_DoMeasurementsAndSend()
 		return false;
 	}
 
-	printf("Disabling WiFi module...\r\n");
-	if(!ESP8266_Disable())
+	printf("Disabling modules...\r\n");
+	if(!ESP8266_Disable() || !DHT22_Disable() || !TSL2581_Disable())
 	{
 		return false;
 	}
