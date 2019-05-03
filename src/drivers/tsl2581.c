@@ -5,10 +5,6 @@ bool tsl_enabled;
 bool TSL2581_Enable()
 {
 	if(tsl_enabled) return false;
-	if(!I2C_Enable(TSL2586_I2C_INTERFACE))
-	{
-		return false;
-	}
 
 	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_CONTROL, 0x01);
 	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_TIMING, TSL2581_ITIME_399_6);
@@ -23,11 +19,6 @@ bool TSL2581_Disable()
 	if(!tsl_enabled) return false;
 
 	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_CONTROL, 0x00);
-
-	if(!I2C_Disable(TSL2586_I2C_INTERFACE))
-	{
-		return false;
-	}
 
 	tsl_enabled = false;
 	return true;
