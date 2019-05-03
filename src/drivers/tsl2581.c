@@ -11,7 +11,8 @@ bool TSL2581_Enable()
 	}
 
 	TSL2581_WriteRegisterValue(TSL2581_COMMAND_CONTROL, 0x01);
-	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_TIMING, TSL2581_ITIME_99_9);
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_TIMING, TSL2581_ITIME_399_6);
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_ANALOG, TSL2581_GAIN_1);
 
 	tsl_enabled = true;
 	return true;
@@ -53,7 +54,50 @@ void TSL2581_WaitForResults()
 
 int TSL2581_CalculateLux(int ch0, int ch1)
 {
+	unsigned long chScale0 = (1 << CH_SCALE);
+	unsigned long chScale1 = chScale0;
+	unsigned long channel0 = (ch0 * chScale0) >> CH_SCALE;
+	unsigned long channel1 = (ch1 * chScale1) >> CH_SCALE;
 
+	unsigned long ratio1 = 0;
+	if (channel0 != 0)
+	{
+		ratio1 = (channel1 << (RATIO_SCALE+1)) / channel0;
+	}
+
+	unsigned long ratio = (ratio1 + 1) >> 1;
+	unsigned int b, m;
+
+	if ((ratio >= 0) && (ratio <= K1C))
+	{
+		b = B1C;
+		m = M1C;
+	}
+	else if (ratio <= K2C)
+	{
+		b = B2C;
+		m = M2C;
+	}
+	else if (ratio <= K3C)
+	{
+		b = B3C;
+		m = M3C;
+	}
+	else if (ratio <= K4C)
+	{
+		b = B4C;
+		m = M4C;
+	}
+	else if (ratio > K5C)
+	{
+		b = B5C;
+		m = M5C;
+	}
+
+	unsigned long temp = (channel0 * b) - (channel1 * m) + (1 << (LUX_SCALE-1));
+	unsigned long lux = temp >> LUX_SCALE;
+
+	return lux;
 }
 
 void TSL2581_WriteRegisterValue(uint8_t registerAddress, uint8_t registerValue)
