@@ -22,7 +22,10 @@ bool BMP280_Enable()
 		bmp280_calibration_data_loaded = true;
 	}
 
-	BMP280_WriteRegisterValue(0xF4, 0x5D);
+	BMP280_WriteRegisterValue(BMP280_REGISTER_CTRL_MEAS,
+			(BMP280_OVERSAMPLING_2 << 5)  |		// Temperature oversampling
+			(BMP280_OVERSAMPLING_16 << 2) |		// Pressure oversampling
+			1);
 
 	bmp280_enabled = true;
 	return true;
@@ -38,6 +41,8 @@ bool BMP280_Disable()
 
 float BMP280_ReadTemperature()
 {
+	BMP280_WaitForResults();
+
 	int msb = BMP280_ReadRegisterValue(BMP280_REGISTER_TEMP_MSB);
 	int lsb = BMP280_ReadRegisterValue(BMP280_REGISTER_TEMP_LSB);
 	int xlsb = BMP280_ReadRegisterValue(BMP280_REGISTER_TEMP_XLSB);
@@ -60,6 +65,8 @@ float BMP280_ReadTemperature()
 
 float BMP280_ReadPressure()
 {
+	BMP280_WaitForResults();
+
 	int msb = BMP280_ReadRegisterValue(BMP280_REGISTER_PRESS_MSB);
 	int lsb = BMP280_ReadRegisterValue(BMP280_REGISTER_PRESS_LSB);
 	int xlsb = BMP280_ReadRegisterValue(BMP280_REGISTER_PRESS_XLSB);
@@ -96,6 +103,11 @@ float BMP280_ReadPressure()
 	p = p + (var1 + var2 + ((double)dig_P7)) / 16.0;
 
 	return p / 100.0f + BMP280_MY_ALTITUDE * 0.12f;
+}
+
+void BMP280_WaitForResults()
+{
+	while((BMP280_ReadRegisterValue(BMP280_REGISTER_STATUS) & 8) == 1);
 }
 
 void BMP280_WriteRegisterValue(uint8_t registerAddress, uint8_t registerValue)

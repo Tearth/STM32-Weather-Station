@@ -31,12 +31,19 @@
 #define BMP280_CALIB_P8_INDEX 10
 #define BMP280_CALIB_P9_INDEX 11
 
+#define BMP280_OVERSAMPLING_1 1
+#define BMP280_OVERSAMPLING_2 2
+#define BMP280_OVERSAMPLING_4 3
+#define BMP280_OVERSAMPLING_8 4
+#define BMP280_OVERSAMPLING_16 7
+
 #include <stdbool.h>
 #include <cpu/i2c.h>
 
 bool BMP280_Enable();
 float BMP280_ReadTemperature();
 float BMP280_ReadPressure();
+void BMP280_WaitForResults();
 
 void BMP280_WriteRegisterValue(uint8_t registerAddress, uint8_t registerValue);
 uint8_t BMP280_ReadRegisterValue(uint8_t registerAddress);
