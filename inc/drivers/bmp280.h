@@ -1,0 +1,41 @@
+#ifndef BMP280_H
+#define BMP280_H
+
+#define BMP280_I2C_INTERFACE I2C1
+#define BMP280_I2C_ADDRESS 0x76
+
+#define BMP280_REGISTER_ID 0xD0
+#define BMP280_REGISTER_RESET 0xE0
+#define BMP280_REGISTER_STATUS 0xF3
+#define BMP280_REGISTER_CTRL_MEAS 0xF4
+#define BMP280_REGISTER_CONFIG 0xF5
+#define BMP280_REGISTER_PRESS_MSB 0xF7
+#define BMP280_REGISTER_PRESS_LSB 0xF8
+#define BMP280_REGISTER_PRESS_XLSB 0xF9
+#define BMP280_REGISTER_TEMP_MSB 0xFA
+#define BMP280_REGISTER_TEMP_LSB 0xFB
+#define BMP280_REGISTER_TEMP_XLSB 0xFC
+
+#define BMP280_CALIB_T1_INDEX 0
+#define BMP280_CALIB_T2_INDEX 1
+#define BMP280_CALIB_T3_INDEX 2
+#define BMP280_CALIB_P1_INDEX 3
+#define BMP280_CALIB_P2_INDEX 4
+#define BMP280_CALIB_P3_INDEX 5
+#define BMP280_CALIB_P4_INDEX 6
+#define BMP280_CALIB_P5_INDEX 7
+#define BMP280_CALIB_P6_INDEX 8
+#define BMP280_CALIB_P7_INDEX 9
+#define BMP280_CALIB_P8_INDEX 10
+#define BMP280_CALIB_P9_INDEX 11
+
+#include <stdbool.h>
+#include <cpu/i2c.h>
+
+bool BMP280_Enable();
+float BMP280_ReadTemperature();
+
+void BMP280_WriteRegisterValue(uint8_t registerAddress, uint8_t registerValue);
+uint8_t BMP280_ReadRegisterValue(uint8_t registerAddress);
+
+#endif
