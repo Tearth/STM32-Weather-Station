@@ -10,6 +10,9 @@ bool TSL2581_Enable()
 		return false;
 	}
 
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND_CONTROL, 0x01);
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_TIMING, TSL2581_ITIME_99_9);
+
 	tsl_enabled = true;
 	return true;
 }
@@ -22,8 +25,35 @@ bool TSL2581_Disable()
 		return false;
 	}
 
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND_CONTROL, 0x00);
+
 	tsl_enabled = false;
 	return true;
+}
+
+int TSL2581_ReadInsolation()
+{
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_CONTROL, 0x03);
+	TSL2581_WaitForResults();
+
+	int ch0Low = TSL2581_ReadRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_DATA0LOW);
+	int ch0High = TSL2581_ReadRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_DATA0HIGH);
+	int ch1Low = TSL2581_ReadRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_DATA1LOW);
+	int ch1High = TSL2581_ReadRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_DATA1HIGH);
+
+	TSL2581_WriteRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_CONTROL, 0x01);
+
+	return TSL2581_CalculateLux((ch0High << 8) | ch0Low, (ch1High << 8) | ch1Low);
+}
+
+void TSL2581_WaitForResults()
+{
+	while((TSL2581_ReadRegisterValue(TSL2581_COMMAND | TSL2581_COMMAND_CONTROL) & 16) == 0);
+}
+
+int TSL2581_CalculateLux(int ch0, int ch1)
+{
+
 }
 
 void TSL2581_WriteRegisterValue(uint8_t registerAddress, uint8_t registerValue)
