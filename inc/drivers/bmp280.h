@@ -4,6 +4,8 @@
 #define BMP280_I2C_INTERFACE I2C1
 #define BMP280_I2C_ADDRESS 0x76
 
+#define BMP280_MY_ALTITUDE 180
+
 #define BMP280_REGISTER_ID 0xD0
 #define BMP280_REGISTER_RESET 0xE0
 #define BMP280_REGISTER_STATUS 0xF3
@@ -34,6 +36,7 @@
 
 bool BMP280_Enable();
 float BMP280_ReadTemperature();
+float BMP280_ReadPressure();
 
 void BMP280_WriteRegisterValue(uint8_t registerAddress, uint8_t registerValue);
 uint8_t BMP280_ReadRegisterValue(uint8_t registerAddress);
