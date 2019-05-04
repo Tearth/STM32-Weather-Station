@@ -8,7 +8,7 @@ bool Core_DoMeasurementsAndSend()
 	}
 
 	printf("Enabling modules...\r\n");
-	if(!ESP8266_Enable() || !DHT22_Enable() || !TSL2581_Enable() || !BMP280_Enable())
+	if(!ESP8266_Enable() || !DHT22_Enable() || !TSL2581_Enable() || !BMP280_Enable() || !GP2_Enable())
 	{
 		return false;
 	}
@@ -33,6 +33,9 @@ bool Core_DoMeasurementsAndSend()
 	printf("Reading pressure...\r\n");
 	printf("Pressure = %f hPa\r\n", BMP280_ReadPressure());
 
+	printf("Reading air quality...\r\n");
+	printf("Air quality = %f ug/m3\r\n", GP2_Read());
+
 	printf("Setting mode...\r\n");
 	if(!ESP8266_SetMode(ESP8266_Mode_Client))
 	{
@@ -52,7 +55,7 @@ bool Core_DoMeasurementsAndSend()
 	}
 
 	printf("Disabling modules...\r\n");
-	if(!ESP8266_Disable() || !DHT22_Disable() || !TSL2581_Disable() || !BMP280_Disable())
+	if(!ESP8266_Disable() || !DHT22_Disable() || !TSL2581_Disable() || !BMP280_Disable() || !GP2_Disable())
 	{
 		return false;
 	}
