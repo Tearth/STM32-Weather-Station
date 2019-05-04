@@ -13,6 +13,7 @@
 #include <drivers/esp8266.h>
 #include <drivers/dht22.h>
 #include <drivers/tsl2581.h>
+#include <drivers/bmp280.h>
 
 bool Core_DoMeasurementsAndSend();
 

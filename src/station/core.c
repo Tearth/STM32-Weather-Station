@@ -2,12 +2,17 @@
 
 bool Core_DoMeasurementsAndSend()
 {
-	printf("Enabling modules...\r\n");
-	if(!ESP8266_Enable() || !DHT22_Enable() || !TSL2581_Enable())
+	if(!I2C_Enable(I2C1))
 	{
 		return false;
 	}
-	Delay(300);
+
+	printf("Enabling modules...\r\n");
+	if(!ESP8266_Enable() || !DHT22_Enable() || !TSL2581_Enable() || !BMP280_Enable())
+	{
+		return false;
+	}
+	Delay(2000);
 
 	printf("Reading humidity...\r\n");
 
@@ -21,6 +26,12 @@ bool Core_DoMeasurementsAndSend()
 
 	printf("Reading insolation...\r\n");
 	printf("Insolation = %d Lux\r\n", TSL2581_ReadInsolation());
+
+	printf("Reading temperature...\r\n");
+	printf("Temperature = %f C\r\n", BMP280_ReadTemperature());
+
+	printf("Reading pressure...\r\n");
+	printf("Pressure = %f hPa\r\n", BMP280_ReadPressure());
 
 	printf("Setting mode...\r\n");
 	if(!ESP8266_SetMode(ESP8266_Mode_Client))
@@ -41,7 +52,12 @@ bool Core_DoMeasurementsAndSend()
 	}
 
 	printf("Disabling modules...\r\n");
-	if(!ESP8266_Disable() || !DHT22_Disable() || !TSL2581_Disable())
+	if(!ESP8266_Disable() || !DHT22_Disable() || !TSL2581_Disable() || !BMP280_Disable())
+	{
+		return false;
+	}
+
+	if(!I2C_Disable(I2C1))
 	{
 		return false;
 	}

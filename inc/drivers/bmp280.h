@@ -41,6 +41,7 @@
 #include <cpu/i2c.h>
 
 bool BMP280_Enable();
+bool BMP280_Disable();
 float BMP280_ReadTemperature();
 float BMP280_ReadPressure();
 void BMP280_WaitForResults();
