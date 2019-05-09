@@ -4,6 +4,7 @@
 #include <stm32f30x.h>
 #include <stdbool.h>
 #include <cpu/adc.h>
+#include <library/delay.h>
 
 #define GP2_DATA_PIN GPIO_Pin_11
 #define GP2_ILED_PIN GPIO_Pin_2

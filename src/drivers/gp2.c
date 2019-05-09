@@ -40,11 +40,13 @@ bool GP2_Disable()
 float GP2_Read()
 {
 	GPIO_SetBits(GPIOB, GP2_ILED_PIN);
-	Delay(10);
+	DelayMicroseconds(280);
 
-	int value = ADC_Read(ADC1, ADC_Channel_14);
+	int value = ADC_Read(ADC1, ADC_Channel_14, ADC_SampleTime_1Cycles5);
 	GPIO_ResetBits(GPIOB, GP2_ILED_PIN);
 
-	float volts = value * 3.3f / 4096.0f;
-	return volts / 0.5f * 100;
+	float volts = value * 3.3f / 4096;
+	float milivolts = (volts * 1000) - 500;
+
+	return milivolts <= 0 ? 0 : milivolts * 0.2f;
 }

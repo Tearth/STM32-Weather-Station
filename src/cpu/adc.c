@@ -52,7 +52,6 @@ bool ADC_Enable(ADC_TypeDef *adcx)
 	adc.ADC_NbrOfRegChannel = 1;
 	ADC_Init(adcx, &adc);
 
-	ADC_StructInit(&adc);
 	ADC_VoltageRegulatorCmd(adcx, ENABLE);
 	ADC_SelectCalibrationMode(adcx, ADC_CalibrationMode_Single);
 	ADC_StartCalibration(adcx);
@@ -79,9 +78,9 @@ bool ADC_Disable(ADC_TypeDef *adcx)
 	return true;
 }
 
-int ADC_Read(ADC_TypeDef *adcx, uint8_t channel)
+int ADC_Read(ADC_TypeDef *adcx, uint8_t channel, uint8_t sampleTime)
 {
-    ADC_RegularChannelConfig(adcx, channel, 1, ADC_SampleTime_61Cycles5);
+    ADC_RegularChannelConfig(adcx, channel, 1, sampleTime);
     ADC_StartConversion(adcx);
     while (!ADC_GetFlagStatus(adcx, ADC_FLAG_EOC));
 
