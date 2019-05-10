@@ -37,16 +37,22 @@ bool GP2_Disable()
 	return true;
 }
 
-float GP2_Read()
+int GP2_Read()
 {
-	GPIO_SetBits(GPIOB, GP2_ILED_PIN);
-	DelayMicroseconds(280);
+	int total = 0;
+	for(int i=0; i<GP2_MEASUREMENTS_COUNT; i++)
+	{
+		GPIO_SetBits(GPIOB, GP2_ILED_PIN);
+		DelayMicroseconds(280);
 
-	int value = ADC_Read(ADC1, ADC_Channel_14, ADC_SampleTime_1Cycles5);
-	GPIO_ResetBits(GPIOB, GP2_ILED_PIN);
+		total += ADC_Read(ADC1, ADC_Channel_14, ADC_SampleTime_1Cycles5);
+		GPIO_ResetBits(GPIOB, GP2_ILED_PIN);
 
-	float volts = value * 3.3f / 4096;
-	float milivolts = (volts * 1000) - 500;
+		Delay(2);
+	}
 
-	return milivolts <= 0 ? 0 : milivolts * 0.2f;
+	float volts = (total / GP2_MEASUREMENTS_COUNT) * 3.3f / 4096;
+	float milivolts = (volts * 1000) - GP2_NO_DUST_MILIVOLTS;
+
+	return milivolts <= 0 ? 0 : milivolts * GP2_DUST_VOLT_RATIO;
 }
