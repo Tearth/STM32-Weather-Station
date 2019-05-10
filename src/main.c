@@ -5,11 +5,10 @@
 #include <cpu/cputemp.h>
 #include <cpu/watchdog.h>
 #include <cpu/timer.h>
-#include <library/delay.h>
-#include <drivers/esp8266.h>
 #include <station/core.h>
 
-#define TICKS_BEFORE_MEASUREMENT 6
+// Ticks * 10 s
+#define TICKS_BEFORE_MEASUREMENT 6 * 5
 
 volatile bool MeasurementFlag = false;
 volatile int TimerTicks;
@@ -44,6 +43,8 @@ int main(void)
 	SYSCLOCK_Enable();
 
 	CPUTEMP_Enable();
+
+	TimerTicks = TICKS_BEFORE_MEASUREMENT - 1;
 	TIMER_Enable(TIM3, 10000);
 
 	printf("STM32 NUCLEO-F303RE (UUID: 0x%X%X%X)\r\n", uuid.Value[0], uuid.Value[1], uuid.Value[2]);
