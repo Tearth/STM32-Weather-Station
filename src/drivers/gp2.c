@@ -45,7 +45,7 @@ int GP2_Read()
 		GPIO_SetBits(GPIOB, GP2_ILED_PIN);
 		DelayMicroseconds(280);
 
-		total += ADC_Read(ADC1, ADC_Channel_14, ADC_SampleTime_1Cycles5);
+		total += ADC_Read(ADC1, ADC_Channel_14, ADC_SampleTime_61Cycles5);
 		GPIO_ResetBits(GPIOB, GP2_ILED_PIN);
 
 		Delay(2);
