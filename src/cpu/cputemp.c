@@ -27,12 +27,17 @@ bool CPUTEMP_Disable()
 
 float CPUTEMP_Read()
 {
-	int measure = ADC_Read(ADC1, ADC_Channel_16, ADC_SampleTime_61Cycles5);
+	int total = 0;
+	for(int i=0; i<CPUTEMP_MEASUREMENTS_COUNT; i++)
+	{
+		total += ADC_Read(ADC1, ADC_Channel_16, ADC_SampleTime_61Cycles5);
+		Delay(2);
+	}
 
 	uint16_t ts30Val = *(uint16_t *)TS30;
 	uint16_t ts110Val = *(uint16_t *)TS110;
 
-	float temperature = measure - ts30Val;
+	float temperature = total / CPUTEMP_MEASUREMENTS_COUNT - ts30Val;
 	temperature *= 110 - 30;
 	temperature /= ts110Val - ts30Val;
 	temperature += 30;
