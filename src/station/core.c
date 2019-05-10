@@ -2,6 +2,8 @@
 
 bool Core_DoMeasurementsAndSend()
 {
+	uint64_t uptime = SYSCLOCK_GetSystemClock();
+
 	if(!I2C_Enable(I2C1))
 	{
 		return false;
@@ -58,8 +60,8 @@ bool Core_DoMeasurementsAndSend()
 
 	printf("Sending measurements...\r\n");
 	char buffer[512];
-	sprintf(buffer, "temperature=%f&internal_temperature=%f&pressure=%f&humidity=%f&insolation=%d&air_quality=%d",
-			bmpTemperature, internalTemperature, pressure, humidity, insolation, airQuality);
+	sprintf(buffer, "temperature=%f&internal_temperature=%f&pressure=%f&humidity=%f&insolation=%d&air_quality=%d&uptime=%lld",
+			bmpTemperature, internalTemperature, pressure, humidity, insolation, airQuality, uptime);
 
 	if(!ESP8266_SendPOST(SERVER_IP, 80, SERVER_PATH, buffer))
 	{
