@@ -30,7 +30,7 @@ float CPUTEMP_Read()
 	int total = 0;
 	for(int i=0; i<CPUTEMP_MEASUREMENTS_COUNT; i++)
 	{
-		total += ADC_Read(ADC1, ADC_Channel_16, ADC_SampleTime_61Cycles5);
+		total += ADC_Read(ADC1, ADC_Channel_16, ADC_SampleTime_181Cycles5);
 		Delay(2);
 	}
 
