@@ -17,5 +17,7 @@
 #include <drivers/gp2.h>
 
 bool Core_DoMeasurementsAndSend();
+bool Core_EnableModules();
+bool Core_DisableModules();
 
 #endif

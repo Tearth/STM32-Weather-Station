@@ -63,6 +63,7 @@ int main(void)
 			if(!Core_DoMeasurementsAndSend())
 			{
 				printf("ERROR\r\n");
+				while(1);
 			}
 
 			printf("Measurement STOP [%lld]\r\n", SYSCLOCK_GetSystemClock());

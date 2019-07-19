@@ -3,17 +3,11 @@
 bool Core_DoMeasurementsAndSend()
 {
 	uint64_t uptime = SYSCLOCK_GetSystemClock();
-
-	if(!I2C_Enable(I2C1))
+	if(!Core_EnableModules())
 	{
-		return false;
+		printf("Error when trying to enable modules\r\n");
 	}
 
-	printf("Enabling modules...\r\n");
-	if(!ESP8266_Enable() || !DHT22_Enable() || !TSL2581_Enable() || !BMP280_Enable() || !GP2_Enable())
-	{
-		return false;
-	}
 	Delay(2000);
 
 	printf("Reading humidity...\r\n");
@@ -68,12 +62,88 @@ bool Core_DoMeasurementsAndSend()
 		return false;
 	}
 
-	printf("Disabling modules...\r\n");
-	if(!ESP8266_Disable() || !DHT22_Disable() || !TSL2581_Disable() || !BMP280_Disable() || !GP2_Disable())
+	if(!Core_DisableModules())
+	{
+		printf("Error when trying to disable modules\r\n");
+	}
+
+	return true;
+}
+
+bool Core_EnableModules()
+{
+	printf("Enabling I2C...\r\n");
+	if(!I2C_Enable(I2C1))
 	{
 		return false;
 	}
 
+	printf("Enabling ESP8266...\r\n");
+	if(!ESP8266_Enable())
+	{
+		return false;
+	}
+
+	printf("Enabling DHT22...\r\n");
+	if(!DHT22_Enable())
+	{
+		return false;
+	}
+
+	printf("Enabling TSL2581...\r\n");
+	if(!TSL2581_Enable())
+	{
+		return false;
+	}
+
+	printf("Enabling BMP280...\r\n");
+	if(!BMP280_Enable())
+	{
+		return false;
+	}
+
+	printf("Enabling GP2...\r\n");
+	if(!GP2_Enable())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Core_DisableModules()
+{
+	printf("Disabling ESP8266...\r\n");
+	if(!ESP8266_Disable())
+	{
+		return false;
+	}
+
+	printf("Disabling DHT22...\r\n");
+	if(!DHT22_Disable())
+	{
+		return false;
+	}
+
+	printf("Disabling TSL2581...\r\n");
+	if(!TSL2581_Disable())
+	{
+		return false;
+	}
+
+	printf("Disabling BMP280...\r\n");
+	if(!BMP280_Disable())
+	{
+		return false;
+	}
+
+	printf("Disabling GP2...\r\n");
+	if(!GP2_Disable())
+	{
+		return false;
+	}
+
+	printf("Disabling I2C...\r\n");
 	if(!I2C_Disable(I2C1))
 	{
 		return false;
