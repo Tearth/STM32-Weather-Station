@@ -18,8 +18,11 @@ bool ESP8266_Enable()
 	gpio.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_Init(ESP8266_CHPD_PORT, &gpio);
 
+	GPIO_ResetBits(ESP8266_CHPD_PORT, ESP8266_CHPD_PIN);
+	Delay(1000);
+
 	GPIO_SetBits(ESP8266_CHPD_PORT, ESP8266_CHPD_PIN);
-	Delay(500);
+	Delay(1000);
 
 	ESP8266_Reset();
 	Delay(500);

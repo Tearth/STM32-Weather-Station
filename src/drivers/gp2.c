@@ -42,11 +42,11 @@ int GP2_Read()
 	int total = 0;
 	for(int i=0; i<GP2_MEASUREMENTS_COUNT; i++)
 	{
-		GPIO_SetBits(GPIOB, GP2_ILED_PIN);
+		GPIO_SetBits(GP2_PORT, GP2_ILED_PIN);
 		DelayMicroseconds(280);
 
 		total += ADC_Read(ADC1, ADC_Channel_14, ADC_SampleTime_61Cycles5);
-		GPIO_ResetBits(GPIOB, GP2_ILED_PIN);
+		GPIO_ResetBits(GP2_PORT, GP2_ILED_PIN);
 
 		Delay(2);
 	}

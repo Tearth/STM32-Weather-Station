@@ -7,7 +7,13 @@ bool DHT22_Enable()
 	if(dht22_enabled) return false;
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+	DHT22_PreparePowerPin();
 	DHT22_PrepareDataPinToWrite();
+
+	GPIO_ResetBits(DHT22_POWER_PORT, DHT22_POWER_PIN);
+	Delay(100);
+	GPIO_SetBits(DHT22_POWER_PORT, DHT22_POWER_PIN);
+	Delay(100);
 
 	GPIO_SetBits(DHT22_DATA_PORT, DHT22_DATA_PIN);
 
@@ -18,9 +24,20 @@ bool DHT22_Enable()
 bool DHT22_Disable()
 {
 	if(!dht22_enabled) return false;
+	GPIO_ResetBits(DHT22_POWER_PORT, DHT22_POWER_PIN);
 
 	dht22_enabled = false;
 	return true;
+}
+
+void DHT22_PreparePowerPin()
+{
+	GPIO_InitTypeDef gpio;
+
+	GPIO_StructInit(&gpio);
+	gpio.GPIO_Pin = DHT22_POWER_PIN;
+	gpio.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_Init(DHT22_POWER_PORT, &gpio);
 }
 
 void DHT22_PrepareDataPinToRead()
