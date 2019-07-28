@@ -44,6 +44,10 @@ int main(void)
 
 	CPUTEMP_Enable();
 
+	DHT22_PreparePowerPin();
+	DHT22_DisablePower();
+	DHT22_EnablePower();
+
 	TimerTicks = TICKS_BEFORE_MEASUREMENT - 1;
 	TIMER_Enable(TIM3, 10000);
 
